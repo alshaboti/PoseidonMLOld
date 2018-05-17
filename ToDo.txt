@@ -1,0 +1,16 @@
+@reader.py
+- parse_packet_head only parse ipv4 packets.
++ need to process also ipv6
+
+@featurizer.py
+- extract_features use device id try with IP (for WAN) and MAC ( for LAN)
+- play with     "source identifier": "IP", at config.json
+
+------------------
+"duration" determine the length of the session (group of connection in happen in the duration time)
+           see sessionaizer @reader.py
+           (Duration of session bins. None, null in json, uses a single bin for the entire pcap)
+"session threshold" determine when to start collecting session packets.
+                start after the first packet in the file by session threshold.
+
+"max port" used in featurizer to init list for max port.

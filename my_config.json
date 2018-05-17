@@ -1,0 +1,33 @@
+{
+    "labels":
+    [
+        "VPN client",
+        "Smartphone",
+        "Printer",
+        "Mail server",
+        "File server",
+        "DNS server",
+        "DHCP server",
+        "Active Directory controller",
+        "SSH server",
+        "CamerasWithingsSmartBabyMonitor",
+        "CamerasDropcam",
+        "SWiHome",
+        "Unknown"
+    ],
+
+    "source identifier": "MAC",
+    "max port": 1024,
+
+    "state size": 32,
+    "look time": 86400,
+    "time constant": 86400,
+
+    "threshold": 0.99,
+
+    "duration": 100000,
+    "session threshold": 1000,
+
+    "rnn size": 128,
+    "batch size": 32
+}
