@@ -5,15 +5,17 @@ from .pcap_utils import extract_macs, \
                        is_private, \
                        is_external, \
                        is_protocol, \
-                       get_source
+                       get_source, \
+                       extract_protocol
 import json
+
 
 def extract_features(session_dict, capture_source=None, max_port=None):
     '''
     Extracts netflow level features from packet capture.
 
     Args:
-        pcap_path: path to the packet capture to process into features
+        session_dict: an ordered dictionary session contains all conn within a duration
         max_port:  Maximum port to get features on (default to reading config)
 
     Returns:
@@ -55,15 +57,21 @@ def extract_features(session_dict, capture_source=None, max_port=None):
     num_udp_sess_rec = 0
     num_icmp_sess_rec = 0
 
+    #All protocols
+    proto_dict = set()
+
     # Iterate over all sessions and aggregate the info
     other_ips = defaultdict(int)
     for key, session in session_dict.items():
+
         address_1, port_1 = key[0].split(':')
         address_2, port_2 = key[1].split(':')
 
         # Get the first packet and grab the macs from it
         first_packet = session[0][1]
         source_mac, destination_mac = extract_macs(first_packet)
+
+        proto_dict.add(extract_protocol(session))
 
         # If the source is the cpature source
         if (source_mac == capture_source
@@ -77,6 +85,7 @@ def extract_features(session_dict, capture_source=None, max_port=None):
             num_tcp_sess_init += is_protocol(session, '06')
             num_udp_sess_init += is_protocol(session, '11')
             num_icmp_sess_init += is_protocol(session, '01')
+
 
             if int(port_1) < max_port:
                 num_sport_init[int(port_1)] += 1
@@ -101,6 +110,8 @@ def extract_features(session_dict, capture_source=None, max_port=None):
             if int(port_2) < max_port:
                 num_dport_rec[int(port_2)] += 1
 
+    print("TCP/IP protocols: ",proto_dict)
+
     num_port_sess = np.concatenate(
                                    (
                                    num_sport_init,
@@ -116,7 +127,9 @@ def extract_features(session_dict, capture_source=None, max_port=None):
     if num_sessions_rec == 0:
         num_sessions_rec += 1
 
-    num_port_sess=np.asarray(num_port_sess)/(num_sessions_init+num_sessions_rec)
+    # average number of connection for each num_sport_init,num_dport_init,num_sport_rec,num_dport_rec
+
+    num_port_sess = np.asarray(num_port_sess)/(num_sessions_init+num_sessions_rec)
 
     extra_features = [0]*8
     extra_features[0] = num_external_init/num_sessions_init

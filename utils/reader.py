@@ -5,7 +5,7 @@ from collections import OrderedDict
 import datetime
 import json
 
-other_proto = []
+other_proto = set()
 
 def parse_packet_head(line):
     '''
@@ -26,11 +26,14 @@ def parse_packet_head(line):
     # Only generate a key if this packet contains IP information
     if len(data) < 2:
         return None
+
     # here only IP for ipv4, IPv6 shows IP6 instead of IP
     if data[2] != 'IP':
-        other_proto.append(data[2])
-        return None
+        if data[2].find(":"):
+            return None,
 
+        other_proto.add(data[2])
+        return None
 
     # Parse out the date and time the packet was seen
     date_str = data[0] + ' ' + data[1]
@@ -78,6 +81,7 @@ def parse_packet_data(line):
     except ValueError:
         return None
     packet_data = data.strip().replace(' ' ,'')
+
 
     return packet_data
 
@@ -144,7 +148,7 @@ def sessionizer(path, duration=None, threshold_time=None):
 
     # Get the packets from the pcap
     packet_dict = packetizer(path)    
-
+    print("other protocols are: ", other_proto)
     # Go through the packets one by one and add them to the session dict
     # each session is a working_dict with all connection and packets in that duration time
     sessions = []
@@ -230,8 +234,8 @@ def sessionizer(path, duration=None, threshold_time=None):
 
     if duration is not None and working_dict is not None:
         if len(working_dict) > 0:
-            for key, packets in working_dict.items():
-                print(key, len(packets))
+            # for key, packets in working_dict.items():
+            #     print(key, len(packets))
             sessions.append(working_dict)
     if duration is None:
         sessions.append(working_dict)

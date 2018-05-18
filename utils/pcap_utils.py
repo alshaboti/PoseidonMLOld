@@ -200,6 +200,7 @@ def extract_protocol(session):
     '''
 
     protocol = session[0][1][46:48]
+
     return protocol
 
 def is_external(address_1, address_2):

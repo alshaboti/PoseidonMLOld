@@ -17,7 +17,7 @@
     ],
 
     "source identifier": "MAC",
-    "max port": 1024,
+    "max port": 65536,
 
     "state size": 32,
     "look time": 86400,
@@ -25,8 +25,8 @@
 
     "threshold": 0.99,
 
-    "duration": 100000,
-    "session threshold": 1000,
+    "duration": 500000,
+    "session threshold": 100,
 
     "rnn size": 128,
     "batch size": 32

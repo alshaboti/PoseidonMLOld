@@ -5,6 +5,7 @@
 @featurizer.py
 - extract_features use device id try with IP (for WAN) and MAC ( for LAN)
 - play with     "source identifier": "IP", at config.json
+- processing port no as a feature needs long list (need to be optimized)
 
 ------------------
 "duration" determine the length of the session (group of connection in happen in the duration time)
@@ -13,4 +14,5 @@
 "session threshold" determine when to start collecting session packets.
                 start after the first packet in the file by session threshold.
 
-"max port" used in featurizer to init list for max port.
+"max port" used in featurizer to init list with all posible ports (max port),
+then each connection in a session will increase port value by 1.
