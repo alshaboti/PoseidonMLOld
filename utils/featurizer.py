@@ -15,7 +15,8 @@ def extract_features(session_dict, capture_source=None, max_port=None):
     Extracts netflow level features from packet capture.
 
     Args:
-        session_dict: an ordered dictionary session contains all conn within a duration
+        session_dict: a list where each item is
+        an ordered dictionary session contains all conn within a duration
         max_port:  Maximum port to get features on (default to reading config)
 
     Returns:

@@ -1,3 +1,4 @@
+import ipaddress
 import os
 import sys
 import subprocess
@@ -6,6 +7,7 @@ import datetime
 import json
 
 other_proto = set()
+
 
 def parse_packet_head(line):
     '''
@@ -26,12 +28,17 @@ def parse_packet_head(line):
     # Only generate a key if this packet contains IP information
     if len(data) < 2:
         return None
+    # ip4 = ipaddress.ip_address('192.0.2.1')
+    # ip6 = ipaddress.ip_address('2001:db8::')
+
+
 
     # here only IP for ipv4, IPv6 shows IP6 instead of IP
     if data[2] != 'IP':
-        if data[2].find(":"):
-            return None,
-
+        if ":" in data[2]:
+            return None
+        if data[2] == 'IP6':
+            print("IPv6=", data[2], "\n", data)
         other_proto.add(data[2])
         return None
 
@@ -81,7 +88,6 @@ def parse_packet_data(line):
     except ValueError:
         return None
     packet_data = data.strip().replace(' ' ,'')
-
 
     return packet_data
 
